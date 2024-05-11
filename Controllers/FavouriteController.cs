@@ -26,7 +26,7 @@ namespace Coffe_Shop_WebAPI.Controllers
 
             return Ok(orders);
         }
-        [HttpGet("{id}")]
+        [HttpGet("{userId}")]
         public ActionResult getById(string userId, int productId)
         {
             if (productId == null)
@@ -75,8 +75,8 @@ namespace Coffe_Shop_WebAPI.Controllers
         [HttpPut("{id}")]
         public ActionResult Update(int id, FavouriteFoodDTO Favourite)
         {
-            if (id == null || Favourite == null || id == 0 || id != Favourite.ProductId)
-    {
+            if (id == null || Favourite == null || id == 0 || id != Favourite.ProductId) { 
+    
                 return BadRequest();
             }
            else

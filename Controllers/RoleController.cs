@@ -103,8 +103,7 @@ namespace Coffe_Shop_WebAPI.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("GetUser")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> GetUser(string id)
         {
             if (await userManager.FindByIdAsync(id) == null) return NotFound();

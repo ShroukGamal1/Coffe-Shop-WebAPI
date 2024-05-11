@@ -53,7 +53,8 @@ namespace Coffe_Shop_WebAPI.Services
                     ProductId=cartDTO.ProductId,
                     OrderId=cartDTO.OrderId,
                     Quantity=cartDTO.Quantity,
-                    SubPrice=cartDTO.SubPrice,
+                    SubPrice=cartDTO.SubPrice
+                    ,
                     State='M'
                 };
                 UnitOfWork.Entity.Add(product);

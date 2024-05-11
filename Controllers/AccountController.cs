@@ -133,11 +133,10 @@ namespace Coffe_Shop_WebAPI.Controllers
             await signInManager.SignOutAsync();
             return Ok();
         }
-        [HttpPut("{id}")]
-        [Route("updatePassword")]
-        public async Task<IActionResult> UpdatePassword(string id, UpdatePasswordDTO userDTO)
+        [HttpPut("updatePassword")]
+        public async Task<IActionResult> UpdatePassword(string userid, UpdatePasswordDTO userDTO)
         {
-            var user = await userManager.FindByIdAsync(id);
+            var user = await userManager.FindByIdAsync(userid);
 
             if (user == null)
             {
@@ -150,26 +149,27 @@ namespace Coffe_Shop_WebAPI.Controllers
                 return Ok(user);
             }
         }
-        [HttpPut("{id}")]
-        [Route("updateUser")]
-        public async Task<IActionResult> UpdateUser(string id, UpdateUserDTO userDTO)
-        {
-            var user = await userManager.FindByIdAsync(id);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                user.Email = userDTO.Email;
-                user.PhoneNumber = userDTO.Phone;
-                user.UserName = userDTO.Name;
-                user.Address = userDTO.Address;
-                await userManager.UpdateAsync(user);
-                return Ok(user);
-            }
-        }
+        //[HttpPut("{id}")]
+        //[Route("updateUser")]
+        //public async Task<IActionResult> UpdateUser(string id, UpdateUserDTO userDTO)
+        //{
+        //    var user = await userManager.FindByIdAsync(id);
+
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    else
+        //    {
+        //        user.Email = userDTO.Email;
+        //        user.PhoneNumber = userDTO.Phone;
+        //        user.UserName = userDTO.Name;
+        //        user.Address = userDTO.Address;
+        //        await userManager.UpdateAsync(user);
+        //        return Ok(user);
+        //    }
+        //}
 
 
     }

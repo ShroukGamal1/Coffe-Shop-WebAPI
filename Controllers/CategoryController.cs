@@ -49,8 +49,7 @@ namespace Coffe_Shop_WebAPI.Controllers
                 return Ok(categoryDTO);
             }
 
-            [HttpDelete]
-            [Route("id")]
+            [HttpDelete("{id}")]
             public ActionResult deleteCategory(int id)
             {
                 if (id == null)
@@ -65,8 +64,7 @@ namespace Coffe_Shop_WebAPI.Controllers
                 }
             }
 
-            [HttpPut]
-            [Route("id")]
+            [HttpPut("{id}")]
             public ActionResult update(int id,CategoryDTO categoryDTO)
             {
 

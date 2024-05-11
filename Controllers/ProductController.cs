@@ -16,7 +16,6 @@ namespace Coffe_Shop_WebAPI.Controllers
             this.Services = Services;
         }
         [HttpGet]
-        
         public ActionResult Get()
         {
             List<ProductDTO> products = Services.GetAll();
@@ -66,8 +65,7 @@ namespace Coffe_Shop_WebAPI.Controllers
             }
         }
 
-        [HttpPut]
-        [Route("id")]
+        [HttpPut("{id}")]
         public ActionResult update(int id,ProductDTO productDTO)
         {
             if (id != productDTO.Id || productDTO == null || id == 0)

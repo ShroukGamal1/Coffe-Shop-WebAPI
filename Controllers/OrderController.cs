@@ -66,7 +66,7 @@ namespace Coffe_Shop_WebAPI.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         [Route("update")]
         public ActionResult update(int id, OrderDTO orderDTO)
         {
