@@ -8,13 +8,13 @@ namespace Coffe_Shop_WebAPI.DTO.UserDTO
         {
             
         }
-        public LoginDTO(string Username, string Password, bool RememberMe)
+        public LoginDTO(string Email, string Password, bool RememberMe)
         {
-            this.Username=Username;
+            this.Email=Email;
             this.Password=Password;
             this.RememberMe = RememberMe;
         }
-        public string Username { get; set; }
+        public string Email { get; set; }
 
         [DataType(DataType.Password)]
         public string Password { get; set; }

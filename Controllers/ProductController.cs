@@ -38,15 +38,15 @@ namespace Coffe_Shop_WebAPI.Controllers
         }
         [HttpPost]
         [Route("product")]
-        public ActionResult Add(AddProductDTO productDTO)
+        public ActionResult Add(AddProductDTO product)
         {
-            if (productDTO == null)
+            if (product == null)
             {
-                return BadRequest();
+                return BadRequest("no content");
             }
-            Services.Add(productDTO);
+            Services.Add(product);
             Services.Save();
-            return Ok(productDTO);
+            return Ok(product);
         }
 
         [HttpDelete]
@@ -68,15 +68,35 @@ namespace Coffe_Shop_WebAPI.Controllers
         [HttpPut("{id}")]
         public ActionResult update(int id,ProductDTO productDTO)
         {
-            if (id != productDTO.Id || productDTO == null || id == 0)
+            if (ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                if (id != productDTO.Id  || id == 0)
+                {
+                    return BadRequest("id is null");
+                }
+                else
+                {
+                    Services.Update(productDTO);
+                    Services.Save();
+                    return CreatedAtAction("getById", new { id = productDTO }, productDTO);
+                }
             }
-            else
+            return BadRequest(ModelState);
+
+        }
+
+        [HttpGet]
+        [Route("productPage")]
+        public ActionResult Get([FromQuery] string searchTerm = "", [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            try
             {
-                Services.Update(productDTO);
-                Services.Save();
-                return CreatedAtAction("getById", new { id = productDTO }, productDTO);
+                List<ProductDTO> productsDTO = Services.getProductPage(searchTerm, page, pageSize);
+                return Ok(productsDTO);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
 
         }

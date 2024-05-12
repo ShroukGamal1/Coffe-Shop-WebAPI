@@ -46,12 +46,12 @@ namespace Coffe_Shop_WebAPI.Controllers
                 IdentityResult result = await userManager.CreateAsync(user, user.PasswordHash);
                 if (result.Succeeded)
                 {
-                    IdentityResult identityResult = await userManager.AddToRoleAsync(user, "user");
+                    IdentityResult identityResult = await userManager.AddToRoleAsync(user, "User");
                     if (!identityResult.Succeeded)
                     {
-                        if (await roleManager.FindByNameAsync("user") == null)
+                        if (await roleManager.FindByNameAsync("User") == null)
                         {
-                            await roleManager.CreateAsync(new IdentityRole() { Name = "user" });
+                            await roleManager.CreateAsync(new IdentityRole() { Name = "User" });
                         }
                         else
                             BadRequest();
@@ -81,15 +81,13 @@ namespace Coffe_Shop_WebAPI.Controllers
             if (ModelState.IsValid)
             {
                 // Find the user by email
-                AppUser user = await userManager.FindByNameAsync(userDTO.Username);
+                AppUser user = await userManager.FindByEmailAsync(userDTO.Email);
 
                 // if user exist
                 if (user != null)
                 {
-                    // Check if the provided password matches the user's password
-                    byte[] passwordBytes = Convert.FromBase64String(userDTO.Password);
-                    string decodedPassword = Encoding.UTF8.GetString(passwordBytes);
-                    bool isValidPassword = await userManager.CheckPasswordAsync(user, decodedPassword);
+                   
+                    bool isValidPassword = await userManager.CheckPasswordAsync(user, userDTO.Password);
 
                     if (isValidPassword)
                     {

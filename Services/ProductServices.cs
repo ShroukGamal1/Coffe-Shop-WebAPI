@@ -73,21 +73,48 @@ namespace Coffe_Shop_WebAPI.Services
             if (productDTO != null)
             {
                 Product product1 = UnitOfWork.Entity.GetById(productDTO.Id);
-                Product p = new Product()
-                {
-                    Id = productDTO.Id,
-                    Name = productDTO.Name,
-                    Description = productDTO.Description,
-                    Price = productDTO.Price,
-                    Quantity = productDTO.Quantity,
-                    Rating = productDTO.Rating,
-                    image = (productDTO.Image != null) ? productDTO.Image : product1.image,
-                    CategoryId = productDTO.CategoryId,
 
-                };
-                UnitOfWork.Entity.Update(p);
+
+                product1.Name = productDTO.Name;
+                product1.Description = productDTO.Description;
+                product1.Price = productDTO.Price;
+                product1.Quantity = productDTO.Quantity;
+                product1.Rating = productDTO.Rating;
+                product1.image = (productDTO.Image != null) ? productDTO.Image : product1.image;
+                product1.CategoryId = productDTO.CategoryId;
+
+                
+                UnitOfWork.Entity.Update(product1);
             }
         }
+
+        public List<ProductDTO> getProductPage(string searchTerm, int pageNum, int pageSize)
+        {
+            var products = UnitOfWork.Entity.getElements(p => p.Name == null ? " ".Contains(searchTerm) : p.Name.Contains(searchTerm), null).ToList();
+            List<ProductDTO> productsDTO = new List<ProductDTO>();
+            foreach (var product in products)
+            {
+                ProductDTO prodDTO = new ProductDTO()
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Description = product.Description,
+                    Price = product.Price,
+                    Quantity = product.Quantity,
+                    Rating = product.Rating,
+                    Image = product.image,
+                    CategoryId = product.CategoryId,
+
+                };
+
+                productsDTO.Add(prodDTO);
+            }
+            var totalCount = productsDTO.Count();
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            productsDTO = productsDTO.Skip((pageNum - 1) * pageSize).Take(pageSize).ToList();
+            return productsDTO;
+        }
+
         public void Save()
         {
             UnitOfWork.Entity.Save();

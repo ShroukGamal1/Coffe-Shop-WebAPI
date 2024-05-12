@@ -6,7 +6,7 @@
         {
 
         }
-        public ProductDTO(int Id, string Name, string Description, decimal Price, double Rating, int Quantity, int? categoryId,string size,string image)
+        public ProductDTO(int Id, string Name, string Description, decimal Price, double Rating, int Quantity, int? categoryId,string size,string? image)
         {
             this.Id = Id;
             this.Name = Name;
@@ -24,7 +24,7 @@
         public decimal Price { get; set; }
         public double Rating { get; set; }
         public string ?Size {  get; set; }
-        public string Image {  get; set; }
+        public string? Image {  get; set; }
         public int Quantity { get; set; }
         public int? CategoryId { get; set; }
     }
