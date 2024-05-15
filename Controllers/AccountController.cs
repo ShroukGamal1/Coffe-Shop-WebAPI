@@ -1,6 +1,7 @@
 ﻿using Coffe_Shop_WebAPI.DTO.UserDTO;
 using Coffe_Shop_WebAPI.Models;
 using Coffe_Shop_WebAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -94,6 +95,8 @@ namespace Coffe_Shop_WebAPI.Controllers
                         string key = "Hello from the other side Shrouq Gamal Ali Shaban";
                         var secretKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key));
                         List<Claim> userData = new List<Claim>();
+                        userData.Add(new Claim("userId", user.Id));
+                        userData.Add(new Claim("userPassword", userDTO.Password));
                         userData.Add(new Claim("username", user.UserName));
                         userData.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
                         userData.Add(new Claim(ClaimTypes.Email, user.Email));
@@ -146,6 +149,13 @@ namespace Coffe_Shop_WebAPI.Controllers
                 await userManager.UpdateAsync(user);
                 return Ok(user);
             }
+        }
+        
+        [HttpGet("GettheLoggedInUserId")]
+        [Authorize]
+        public async Task<IActionResult> GetUserId()
+        {
+            return Ok(User.Claims.FirstOrDefault(c=>c.Type== "userId").Value);
         }
 
         //[HttpPut("{id}")]

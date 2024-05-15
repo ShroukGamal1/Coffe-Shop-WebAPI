@@ -2,6 +2,7 @@
 using Coffe_Shop_WebAPI.DTO.ProductDTO;
 using Coffe_Shop_WebAPI.Models;
 using Coffe_Shop_WebAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +13,12 @@ namespace Coffe_Shop_WebAPI.Controllers
     public class OrderController : ControllerBase
     {
         public OrderServices Services;
-        public OrderController(OrderServices Services)
+        public CartServices CartServices;
+
+        public OrderController(OrderServices Services , CartServices CartServices)
         {
             this.Services = Services;
+            this.CartServices = CartServices;
         }
         [HttpGet]
         public ActionResult Get()
@@ -80,6 +84,14 @@ namespace Coffe_Shop_WebAPI.Controllers
                 Services.Save();
                 return CreatedAtAction("getById", new { id = orderDTO }, orderDTO);
             }
+        }
+
+        [HttpGet("GetOrderOfUser")]
+        [Authorize]
+        public ActionResult GetCart()
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "userId").Value;
+           return Ok(Services.GetOrderWithStateC(userId));
         }
 
         

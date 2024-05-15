@@ -1,4 +1,5 @@
-﻿using Coffe_Shop_WebAPI.DTO.OrderDTO;
+﻿using Coffe_Shop_WebAPI.DTO.CartDTO;
+using Coffe_Shop_WebAPI.DTO.OrderDTO;
 using Coffe_Shop_WebAPI.Models;
 using Coffe_Shop_WebAPI.UnitOfWork;
 
@@ -7,9 +8,11 @@ namespace Coffe_Shop_WebAPI.Services
     public class OrderServices
     {
         unitOfWork<Order> UnitOfWork;
-        public OrderServices(unitOfWork<Order> UnitOfWork)
+        CartServices cartServices;
+        public OrderServices(unitOfWork<Order> UnitOfWork,CartServices cartServices)
         {
             this.UnitOfWork = UnitOfWork;
+            this.cartServices= cartServices;
         }
         public List<OrderDTO> GetAll()
         {
@@ -24,7 +27,6 @@ namespace Coffe_Shop_WebAPI.Services
                 foreach (var order in Orders)
                 {
                     OrderDTO orderDTO = new OrderDTO (order.Id, order.State, order.CheckOutDate, order.TotalPrice,order.UserId);
-
                     OrdersDTO.Add(orderDTO);
                 }
                 return OrdersDTO;
@@ -59,9 +61,9 @@ namespace Coffe_Shop_WebAPI.Services
                 {
                     State = orderDTO.State,
                     CheckOutDate = orderDTO.CheckOutDate,
-                    TotalPrice = orderDTO.TotalPrice,
                     UserId = orderDTO.UserId
                 };
+                orderDTO.TotalPrice = 0;
                 UnitOfWork.Entity.Add(order);
             }
         }
@@ -84,6 +86,14 @@ namespace Coffe_Shop_WebAPI.Services
         public void Save()
         {
             UnitOfWork.Entity.Save();
+        }
+        public CartOrderDTO GetOrderWithStateC(string userId)
+        {
+            Order cart= UnitOfWork.Entity.getElement(o => o.State == 'C' && o.UserId == userId,null);
+            List<cartDTO> products = cartServices.Get(cart.Id);
+            
+            CartOrderDTO cartDTO = new CartOrderDTO(cart.Id, cart.State, cart.CheckOutDate, cart.TotalPrice, cart.UserId,products);
+            return cartDTO;
         }
 
     }

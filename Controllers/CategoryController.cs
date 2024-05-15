@@ -1,6 +1,7 @@
 ﻿using Coffe_Shop_WebAPI.DTO.CategoryDTO;
 using Coffe_Shop_WebAPI.Models;
 using Coffe_Shop_WebAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,73 +11,82 @@ namespace Coffe_Shop_WebAPI.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-       public CategoryServices services;
+        public CategoryServices services;
         public CategoryController(CategoryServices services)
         {
             this.services = services;
         }
         [HttpGet]
-            public ActionResult Get()
+        public ActionResult Get()
+        {
+            List<CategoryDTO> categories = services.GetAll();
+            if (categories == null)
             {
-                List<CategoryDTO> categories = services.GetAll();
-                if (categories == null)
-                {
-                    return NotFound();
-                }
+                return NotFound();
+            }
 
-                return Ok(categories);
-            }
-            [HttpGet("{id}")]
-            public ActionResult getById(int id)
+            return Ok(categories);
+        }
+        [HttpGet("{id}")]
+        public ActionResult getById(int id)
+        {
+            CategoryDTO categoryDTO = services.Get(id);
+            if (categoryDTO == null)
             {
-                CategoryDTO categoryDTO = services.Get(id);
-                if (categoryDTO == null)
-                {
-                    return NotFound();
-                }
-                return Ok(categoryDTO);
+                return NotFound();
             }
-            [HttpPost]
-            [Route("category")]
-            public ActionResult Add(AddCategoryDTO categoryDTO)
+            return Ok(categoryDTO);
+        }
+        [HttpPost]
+        [Route("category")]
+        public ActionResult Add(AddCategoryDTO categoryDTO)
+        {
+            if (categoryDTO == null)
             {
-                if (categoryDTO == null)
-                {
-                    return BadRequest();
-                }
-                services.Add(categoryDTO);
+                return BadRequest();
+            }
+            services.Add(categoryDTO);
+            services.Save();
+            return Ok(new {category=categoryDTO});
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult deleteCategory(int id)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                services.Delete(id);
                 services.Save();
-                return Ok(categoryDTO);
-            }
-
-            [HttpDelete("{id}")]
-            public ActionResult deleteCategory(int id)
-            {
-                if (id == null)
-                {
-                    return BadRequest();
-                }
-                else
-                {
-                    services.Delete(id);
-                    services.Save();
-                    return Ok();
-                }
-            }
-
-            [HttpPut("{id}")]
-            public ActionResult update(int id,CategoryDTO categoryDTO)
-            {
-
-            if (id != categoryDTO.Id|| categoryDTO == null||id==0) { return BadRequest(); }
-            
-                else
-                {
-                    services.Update(categoryDTO);
-                    services.Save();
-                    return CreatedAtAction("getById", new { id = categoryDTO }, categoryDTO);
-                }
-
+                return Ok();
             }
         }
+
+        [HttpPut("{id}")]
+        public ActionResult update(int id, CategoryDTO categoryDTO)
+        {
+
+            if (id != categoryDTO.Id || categoryDTO == null || id == 0) { return BadRequest(); }
+
+            else
+            {
+                services.Update(categoryDTO);
+                services.Save();
+                return CreatedAtAction("getById", new { id = categoryDTO }, categoryDTO);
+            }
+
+        }
+        [HttpGet]
+        [Route("GetCategoriesNames")]
+        public ActionResult GetCategoryNames()
+        {
+            return Ok(services.GetCategoryNamesBy());
+        }
+
+       
+
+    }
     }

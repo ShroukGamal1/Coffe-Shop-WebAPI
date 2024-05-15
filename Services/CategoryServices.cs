@@ -1,6 +1,7 @@
 ﻿using Coffe_Shop_WebAPI.DTO.CategoryDTO;
 using Coffe_Shop_WebAPI.Models;
 using Coffe_Shop_WebAPI.UnitOfWork;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Coffe_Shop_WebAPI.Services
 {
@@ -78,5 +79,18 @@ namespace Coffe_Shop_WebAPI.Services
         {
             UnitOfWork.Entity.Save();
         }
+        public List<string> GetCategoryNamesBy()
+        {
+            List<string> Categorynames=new List<string>(); 
+            foreach(var category in UnitOfWork.Entity.GetAll()) { Categorynames.Add(category.Name); }
+            return Categorynames; 
+        }
+
+        public string GetCategoryName(int id)
+        {
+
+            return UnitOfWork.Entity.GetById(id).Name;
+        }
+
     }
 }

@@ -7,9 +7,13 @@ namespace Coffe_Shop_WebAPI.Services
     public class ProductServices
     {
         unitOfWork<Product> UnitOfWork;
-        public ProductServices(unitOfWork<Product>UnitOfWork)
+        unitOfWork<Category> unit;
+
+        public ProductServices(unitOfWork<Product>UnitOfWork, unitOfWork<Category> unit)
         {
             this.UnitOfWork = UnitOfWork;
+            this.unit = unit;
+
         }
         public List<ProductDTO> GetAll()
         {
@@ -118,6 +122,32 @@ namespace Coffe_Shop_WebAPI.Services
         public void Save()
         {
             UnitOfWork.Entity.Save();
+        }
+
+        public List<ProductDTO> getCategoryProducts(int categoryId)
+        {
+            var products = UnitOfWork.Entity.getElements(c => c.CategoryId == categoryId, null);
+
+            List<ProductDTO> productDTOs = new List<ProductDTO>();
+            foreach (var item in products)
+            {
+                ProductDTO product = new ProductDTO(item.Id, item.Name,item.Description,item.Price,item.Rating,item.Quantity,item.CategoryId,item.size,item.image);
+                productDTOs.Add(product);
+            }
+            return productDTOs;
+
+        }
+        public List<ProductDTO> getTopRated()
+        {
+            List<ProductDTO> productDTOs = new List<ProductDTO>();
+            List<Product> products = UnitOfWork.Entity.GetAll().OrderByDescending(p => p.Rating).Take(3).ToList();
+            foreach(var item in products)
+            {
+                ProductDTO product = new ProductDTO(item.Id, item.Name, item.Description, item.Price, item.Rating, item.Quantity, item.CategoryId, item.size, item.image);
+                productDTOs.Add(product);
+            }
+            return productDTOs;
+                
         }
     }
 }

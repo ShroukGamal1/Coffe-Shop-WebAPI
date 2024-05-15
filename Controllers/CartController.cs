@@ -36,7 +36,7 @@ namespace Coffe_Shop_WebAPI.Controllers
         [HttpGet("{Id}")]
         public ActionResult getById(int Id)
         {
-            List<Product_Order> orderDTO = Services.Get(Id);
+            List<cartDTO> orderDTO = Services.Get(Id);
             if (orderDTO == null)
             {
                 return NotFound("noo");
@@ -46,7 +46,7 @@ namespace Coffe_Shop_WebAPI.Controllers
 
         [HttpPost]
         [Route("cart")]
-        public ActionResult Add(CartDTO orderDTO)
+        public ActionResult Add(cartDTO orderDTO)
         {
             if (orderDTO == null)
             {
@@ -61,7 +61,7 @@ namespace Coffe_Shop_WebAPI.Controllers
         }
 
         [HttpDelete]
-            public ActionResult delete(CartDTO cart)
+            public ActionResult delete(cartDTO cart)
             {
                 if (cart==null)
                 {
@@ -77,7 +77,7 @@ namespace Coffe_Shop_WebAPI.Controllers
             }
         [HttpPut]
         [Route ("update")]
-        public ActionResult update(CartDTO productDTO)
+        public ActionResult update(cartDTO productDTO)
         {
             if (productDTO == null || productDTO.OrderId == 0 || productDTO.ProductId == 0)
             {
@@ -86,43 +86,13 @@ namespace Coffe_Shop_WebAPI.Controllers
             else
             {
                 var price = productServices.Get(productDTO.ProductId).Price;
-                productDTO.SubPrice += (productDTO.Quantity - 1) * price;
+               
+                    productDTO.SubPrice = productDTO.Quantity * price;
+               
                 Services.Update(productDTO);
                 Services.Save();
                 return CreatedAtAction("getById", new { id = productDTO }, productDTO);
             }
-        }
-
-        [HttpPut]
-        [Route("updateState")]
-        public ActionResult updateState(CartDTO productDTO)
-        {
-            if (productDTO == null || productDTO.OrderId == 0 || productDTO.ProductId == 0)
-            {
-                return BadRequest();
-            }
-            else
-            {
-                ProductDTO product = productServices.Get(productDTO.ProductId);
-                if (product.Quantity == productDTO.Quantity)
-                {
-                    product.Quantity = 0;
-                    productServices.Update(product);
-                }
-                else if (product.Quantity < productDTO.Quantity)
-                {
-                    return BadRequest();
-                }
-                else
-                {
-                    product.Quantity -= productDTO.Quantity;
-                    productServices.Update(product);
-                }
-                Services.UpdateState(productDTO);
-            }
-
-            Services.Save();
-            return CreatedAtAction("getById", new { id = productDTO }, productDTO);
         }
     }
     }

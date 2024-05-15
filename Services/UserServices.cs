@@ -1,6 +1,9 @@
 ﻿using Coffe_Shop_WebAPI.DTO.UserDTO;
 using Coffe_Shop_WebAPI.Models;
 using Coffe_Shop_WebAPI.UnitOfWork;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Primitives;
+using System.Security.Claims;
 
 namespace Coffe_Shop_WebAPI.Services
 {
@@ -73,5 +76,6 @@ namespace Coffe_Shop_WebAPI.Services
         {
             unit.Entity.Save();
         }
+        
     }
 }

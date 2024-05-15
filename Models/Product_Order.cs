@@ -11,7 +11,6 @@ namespace Coffe_Shop_WebAPI.Models
         public int OrderId {  get; set; }
         public int Quantity {  get; set; }
         public decimal SubPrice { get; set; }
-        public char State {  get; set; }
         public virtual Product Product { get; set; }
         public virtual Order Order { get; set; }
 

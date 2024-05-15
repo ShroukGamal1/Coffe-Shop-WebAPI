@@ -11,9 +11,11 @@ namespace Coffe_Shop_WebAPI.Controllers
     public class ProductController : ControllerBase
     {
         public ProductServices Services;
-        public ProductController(ProductServices Services)
+        public CategoryServices CategoryServices;
+        public ProductController(ProductServices Services, CategoryServices categoryServices)
         {
             this.Services = Services;
+            CategoryServices = categoryServices;
         }
         [HttpGet]
         public ActionResult Get()
@@ -99,6 +101,21 @@ namespace Coffe_Shop_WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
 
+        }
+
+        [HttpGet("GetProductsperCategory/{id}")]
+        public ActionResult GetProducts(int id)
+        {
+            if (id== null)
+            {
+                return NotFound();
+            }
+            return Ok(Services.getCategoryProducts(id));
+        }
+        [HttpGet("Get3TopRatedProducts")]
+        public ActionResult GetTopRated() {
+            return Ok(Services.getTopRated());
+        
         }
     }
     }

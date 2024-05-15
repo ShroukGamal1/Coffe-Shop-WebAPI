@@ -25,9 +25,15 @@ namespace Coffe_Shop_WebAPI.Services
             }
         }
 
-        public List<Product_Order> Get(int orderId)
+        public List<cartDTO> Get(int orderId)
         {
-           List<Product_Order> carts = UnitOfWork.Entity.getElements(c=>c.OrderId==orderId,null);
+            List<cartDTO> carts = new List<cartDTO>(); 
+            List<Product_Order>p=UnitOfWork.Entity.getElements(c=>c.OrderId==orderId,null);
+            foreach(var pro in p)
+            {
+                cartDTO c = new cartDTO(pro.ProductId,pro.OrderId,pro.Quantity,pro.SubPrice);
+                carts.Add(c);
+            }
             if (carts == null)
             {
                 return null;
@@ -38,13 +44,13 @@ namespace Coffe_Shop_WebAPI.Services
                 return carts;
             }
         }
-        public void Delete(CartDTO cart)
+        public void Delete(cartDTO cart)
         {
             Product_Order product = UnitOfWork.Entity.getElement(c => c.ProductId == cart.ProductId && c.OrderId == cart.OrderId,null);
 
             UnitOfWork.Entity.Delete(product);
         }
-        public void Add(CartDTO cartDTO)
+        public void Add(cartDTO cartDTO)
         {
             if (cartDTO != null)
             {
@@ -54,17 +60,17 @@ namespace Coffe_Shop_WebAPI.Services
                     OrderId=cartDTO.OrderId,
                     Quantity=cartDTO.Quantity,
                     SubPrice=cartDTO.SubPrice
-                    ,
-                    State='M'
+                    
                 };
                 UnitOfWork.Entity.Add(product);
             }
         }
 
-        public void Update(CartDTO productDTO)
+        public void Update(cartDTO productDTO)
         {
             if (productDTO != null)
             {
+                
                 Product_Order product = new Product_Order()
                 {
                   ProductId=productDTO.ProductId,
@@ -76,21 +82,7 @@ namespace Coffe_Shop_WebAPI.Services
             }
         }
 
-        public void UpdateState(CartDTO productDTO)
-        {
-            if (productDTO != null)
-            {
-                Product_Order product = new Product_Order()
-                {
-                    ProductId = productDTO.ProductId,
-                    OrderId = productDTO.OrderId,
-                    Quantity = productDTO.Quantity,
-                    SubPrice = productDTO.SubPrice,
-                    State='D'
-                };
-                UnitOfWork.Entity.Update(product);
-            }
-        }
+      
 
         public void Save()
         {

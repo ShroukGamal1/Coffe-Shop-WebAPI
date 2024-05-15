@@ -2,13 +2,13 @@
 
 namespace Coffe_Shop_WebAPI.DTO.CartDTO
 {
-    public class CartDTO
+    public class cartDTO
     {
-        public CartDTO()
+        public cartDTO()
         {
 
         }
-        public CartDTO(int ProductId, int OrderId, int Quantity, decimal SubPrice)
+        public cartDTO(int ProductId, int OrderId, int Quantity, decimal SubPrice)
         {
             this.ProductId = ProductId;
             this.SubPrice = SubPrice;
