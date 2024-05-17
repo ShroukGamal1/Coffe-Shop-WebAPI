@@ -3,6 +3,7 @@ using Coffe_Shop_WebAPI.DTO.ProductDTO;
 using Coffe_Shop_WebAPI.Models;
 using Coffe_Shop_WebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,15 +44,26 @@ namespace Coffe_Shop_WebAPI.Controllers
         }
         [HttpPost]
         [Route("order")]
-        public ActionResult Add(AddOrderDTO orderDTO)
+        [Authorize]
+        public ActionResult Add([FromBody]AddOrderDTO orderDTO)
         {
             if (orderDTO == null)
             {
-                return BadRequest();
+                return BadRequest("Order data is null");
             }
-            Services.Add(orderDTO);
-            Services.Save();
-            return Ok(orderDTO);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is missing");
+            }
+            orderDTO.UserId = userId;
+            var result = Services.Add(orderDTO);
+            if (result == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error adding the order");
+            }
+
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
@@ -91,8 +103,13 @@ namespace Coffe_Shop_WebAPI.Controllers
         public ActionResult GetCart()
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == "userId").Value;
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
            return Ok(Services.GetOrderWithStateC(userId));
         }
+
 
         
     }
