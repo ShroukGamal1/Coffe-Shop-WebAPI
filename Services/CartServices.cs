@@ -47,7 +47,6 @@ namespace Coffe_Shop_WebAPI.Services
         public void Delete(cartDTO cart)
         {
             Product_Order product = UnitOfWork.Entity.getElement(c => c.ProductId == cart.ProductId && c.OrderId == cart.OrderId,null);
-
             UnitOfWork.Entity.Delete(product);
         }
         public void Add(cartDTO cartDTO)

@@ -52,16 +52,13 @@ namespace Coffe_Shop_WebAPI.Controllers
             {
                 return BadRequest();
             }
-            orderDTO.Quantity = 1;
-            var price= productServices.Get(orderDTO.ProductId).Price;
-            orderDTO.SubPrice = price * orderDTO.Quantity;
             Services.Add(orderDTO);
             Services.Save();
             return Ok(orderDTO);
         }
 
         [HttpDelete]
-            public ActionResult delete(cartDTO cart)
+            public ActionResult delete([FromBody] cartDTO cart)
             {
                 if (cart==null)
                 {
