@@ -155,7 +155,9 @@ namespace Coffe_Shop_WebAPI.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserId()
         {
-            return Ok(User.Claims.FirstOrDefault(c=>c.Type== "userId").Value);
+            var res = User.Claims.FirstOrDefault(c => c.Type == "userId").Value;
+
+            return Ok(res);
         }
 
         //[HttpPut("{id}")]
