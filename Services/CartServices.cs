@@ -7,9 +7,12 @@ namespace Coffe_Shop_WebAPI.Services
     public class CartServices
     {
         unitOfWork<Product_Order> UnitOfWork;
-        public CartServices(unitOfWork<Product_Order> UnitOfWork)
+        unitOfWork<Order> orderUnit;
+
+        public CartServices(unitOfWork<Product_Order> UnitOfWork, unitOfWork<Order>orderUnit)
         {
             this.UnitOfWork = UnitOfWork;
+            this.orderUnit=orderUnit;
         }
         public List<Product_Order> GetAll()
         {
@@ -86,6 +89,17 @@ namespace Coffe_Shop_WebAPI.Services
         public void Save()
         {
             UnitOfWork.Entity.Save();
+        }
+        public cartDTO GetProdut(int productId,string userId)
+        {
+            Order order = orderUnit.Entity.getElement(o => o.State == 'C' && o.UserId == userId, null);
+            Product_Order cart = UnitOfWork.Entity.getElement(p => p.OrderId == order.Id && p.ProductId == productId, null);
+            if (cart != null)
+            {
+                cartDTO cartDTO = new cartDTO(cart.ProductId,cart.OrderId,cart.Quantity,cart.SubPrice);
+                return cartDTO;
+            }
+            return null;
         }
     }
 }

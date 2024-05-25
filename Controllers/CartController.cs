@@ -3,6 +3,7 @@ using Coffe_Shop_WebAPI.DTO.OrderDTO;
 using Coffe_Shop_WebAPI.DTO.ProductDTO;
 using Coffe_Shop_WebAPI.Models;
 using Coffe_Shop_WebAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -75,7 +76,8 @@ namespace Coffe_Shop_WebAPI.Controllers
         [HttpPut]
         [Route ("update")]
         public ActionResult update(cartDTO productDTO)
-        {
+        
+       {
             if (productDTO == null || productDTO.OrderId == 0 || productDTO.ProductId == 0)
             {
                 return BadRequest();
@@ -90,6 +92,24 @@ namespace Coffe_Shop_WebAPI.Controllers
                 Services.Save();
                 return CreatedAtAction("getById", new { id = productDTO }, productDTO);
             }
+        }
+        [HttpGet]
+        [Route("GetProduct")]
+        [Authorize]
+        public ActionResult GetProduct(int id)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "userId").Value;
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            if (Services.GetProdut(id, userId)!=null)
+            {
+                return Ok(Services.GetProdut(id, userId));
+
+            }
+            return Ok( null);
+
         }
     }
     }
