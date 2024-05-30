@@ -87,5 +87,26 @@ namespace Coffe_Shop_WebAPI.Services
 
             return new FavouriteFoodDTO(p.ProductId, p.UserId);
         }
+        public List<UserFavFoodDTO> GetUserFav(string userId, string include)
+        {
+            var res = UnitOfWork.Entity.getElements(x => x.UserId == userId, include);
+
+            List<UserFavFoodDTO> userFav = new List<UserFavFoodDTO>();
+            foreach (var item in res)
+            {
+                UserFavFoodDTO userFavFoodDTO = new UserFavFoodDTO()
+                {
+                    UserId = item.UserId,
+                    ProductId = item.ProductId,
+                    ProductDesc = item.Product.Description,
+                    ProductImage = item.Product.image,
+                    ProductName = item.Product.Name,
+                    ProductPrice = item.Product.Price,
+                };
+                userFav.Add(userFavFoodDTO);
+            }
+
+            return userFav;
+        }
     }
 }

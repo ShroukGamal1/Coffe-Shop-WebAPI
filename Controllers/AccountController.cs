@@ -155,9 +155,14 @@ namespace Coffe_Shop_WebAPI.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserId()
         {
-            var res = User.Claims.FirstOrDefault(c => c.Type == "userId").Value;
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "userId");
 
-            return Ok(res);
+            if (userIdClaim == null)
+            {
+                return BadRequest(new { message = "User ID claim not found." });
+            }
+
+            return Ok(new { userId = userIdClaim.Value });
         }
 
         //[HttpPut("{id}")]

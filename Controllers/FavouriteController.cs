@@ -26,23 +26,29 @@ namespace Coffe_Shop_WebAPI.Controllers
 
             return Ok(orders);
         }
-        [HttpGet("{userId}")]
-        public ActionResult getById(string userId, int productId)
-        {
-            if (productId == null)
-            {
-                return BadRequest();
-            }
-            FavouriteFoodDTO? Favourite = Services.GetById(productId, userId,null);
-            if (Favourite != null)
-            {
-                return Ok(Favourite);
-            }
-            else
-            {
-                return NotFound();
-            }
+        //[HttpGet("{userId}")]
+        //public ActionResult getById(string userId, int productId)
+        //{
+        //    if (productId == null)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    FavouriteFoodDTO? Favourite = Services.GetById(productId, userId,null);
+        //    if (Favourite != null)
+        //    {
+        //        return Ok(Favourite);
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
 
+        //}
+        [HttpGet("{Id}")]
+        public IActionResult getUserFavouriteFood(string Id)
+        {
+            var res = Services.GetUserFav(Id, "Product");
+            return Ok(res);
         }
 
         [HttpPost]
