@@ -151,18 +151,30 @@ namespace Coffe_Shop_WebAPI.Controllers
             }
         }
         
-        [HttpGet("GettheLoggedInUserId")]
-        [Authorize]
+        [HttpGet("GettheLoggedInUserClaims")]
+        
         public async Task<IActionResult> GetUserId()
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "userId");
-
-            if (userIdClaim == null)
+            if (User.Identity.IsAuthenticated)
             {
-                return BadRequest(new { message = "User ID claim not found." });
+                var id = User.Claims.FirstOrDefault(c => c.Type == "userId").Value;
+                var rols = await userManager.GetRolesAsync(await userManager.FindByIdAsync(id));
+
+                return Ok(new
+                {
+                    id = id,
+                    name = User.Claims.FirstOrDefault(c => c.Type == "username").Value,
+                    email = User.Claims.Skip(3).Take(1).FirstOrDefault().Value,
+                    password = User.Claims.FirstOrDefault(c => c.Type == "userPassword").Value,
+                    address = User.Claims.FirstOrDefault(c => c.Type == "Address").Value,
+                    roles = rols
+                });
+            }
+            else
+            {
+                return Ok(User.Identity.IsAuthenticated);
             }
 
-            return Ok(new { userId = userIdClaim.Value });
         }
 
         //[HttpPut("{id}")]

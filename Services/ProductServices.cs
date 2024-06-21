@@ -92,9 +92,12 @@ namespace Coffe_Shop_WebAPI.Services
             }
         }
 
-        public List<ProductDTO> getProductPage(string searchTerm, int pageNum, int pageSize)
+        public List<ProductDTO> getProductPage(string searchTerm, int pageNum, int pageSize, string category)
         {
-            var products = UnitOfWork.Entity.getElements(p => p.Name == null ? " ".Contains(searchTerm) : p.Name.Contains(searchTerm), null).ToList();
+            var products =UnitOfWork.Entity.getElements(p =>
+        (p.Name == null ? " ".Contains(searchTerm) : p.Name.Contains(searchTerm)) &&
+        (category != "all" ? p.Category != null && p.Category.Name == category : true),
+        "Category").ToList();
             List<ProductDTO> productsDTO = new List<ProductDTO>();
             foreach (var product in products)
             {

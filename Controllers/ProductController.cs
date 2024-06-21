@@ -89,11 +89,11 @@ namespace Coffe_Shop_WebAPI.Controllers
 
         [HttpGet]
         [Route("productPage")]
-        public ActionResult Get([FromQuery] string searchTerm = "", [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public ActionResult Get([FromQuery] string searchTerm = "", [FromQuery] int page = 1, [FromQuery] int pageSize = 6,[FromQuery]string category="all")
         {
             try
             {
-                List<ProductDTO> productsDTO = Services.getProductPage(searchTerm, page, pageSize);
+                List<ProductDTO> productsDTO = Services.getProductPage(searchTerm, page, pageSize,category);
                 return Ok(productsDTO);
             }
             catch (Exception ex)
