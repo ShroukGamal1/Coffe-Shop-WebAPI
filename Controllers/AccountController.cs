@@ -128,7 +128,7 @@ namespace Coffe_Shop_WebAPI.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpGet]
+        [HttpGet("LogOut")]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
